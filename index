@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>환대의 연결고리: 공통점과 차이점 찾기</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+        body { font-family: 'Noto Sans KR', sans-serif; }
+        .slide-enter { animation: slideIn 0.5s ease-out forwards; }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .item-pop { animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes popIn {
+            from { transform: scale(0.5); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 h-screen flex flex-col overflow-hidden">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm p-4 flex justify-between items-center z-10">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600">
+                <i class="fas fa-hand-holding-heart text-xl"></i>
+            </div>
+            <div>
+                <h1 class="text-xl font-bold text-slate-800">환대의 연결고리</h1>
+                <p class="text-xs text-slate-500">서로의 자리를 내어주는 대화</p>
+            </div>
+        </div>
+        <div id="timer-display" class="hidden text-2xl font-mono font-bold text-indigo-600 bg-indigo-50 px-4 py-1 rounded-lg">
+            05:00
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 relative w-full max-w-6xl mx-auto p-4 md:p-6 overflow-hidden flex flex-col justify-center">
+
+        <!-- Scene 1: Start Screen -->
+        <div id="scene-start" class="slide-enter w-full max-w-2xl mx-auto text-center space-y-8 bg-white p-10 rounded-2xl shadow-xl border border-slate-100">
+            <div class="space-y-4">
+                <span class="inline-block px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-sm font-medium mb-2">Team Icebreaking</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-800">우리 사이, 얼마나 연결되어 있나요?</h2>
+                <p class="text-lg text-slate-600 leading-relaxed">
+                    환대는 '다름'을 인정하고 타인을 나의 세계로 초대하는 것입니다.<br>
+                    우리가 얼마나 <strong>비슷한지(안전감)</strong>, <br>또 얼마나 <strong>다른지(새로운 발견)</strong> 찾아보세요.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-left my-8">
+                <div class="bg-emerald-50 p-5 rounded-xl border border-emerald-100">
+                    <h3 class="font-bold text-emerald-700 mb-2"><i class="fas fa-link mr-2"></i>공통점 찾기</h3>
+                    <p class="text-sm text-emerald-600">"우리 둘 다 민초파네!"<br>공통점은 우리를 하나로 묶어주는 끈이 됩니다.</p>
+                </div>
+                <div class="bg-amber-50 p-5 rounded-xl border border-amber-100">
+                    <h3 class="font-bold text-amber-700 mb-2"><i class="fas fa-lightbulb mr-2"></i>차이점(발견) 찾기</h3>
+                    <p class="text-sm text-amber-600">"너는 아침형 인간이구나!"<br>차이점은 나의 세상을 넓혀주는 창문이 됩니다.</p>
+                </div>
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-4 justify-center items-center">
+                <div class="flex items-center gap-2 bg-slate-100 px-4 py-2 rounded-lg">
+                    <span class="text-slate-600 text-sm">제한 시간</span>
+                    <select id="time-select" class="bg-transparent font-bold text-slate-800 outline-none cursor-pointer">
+                        <option value="180">3분</option>
+                        <option value="300" selected>5분</option>
+                        <option value="600">10분</option>
+                    </select>
+                </div>
+                <button onclick="startGame()" class="px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg transform transition hover:scale-105 flex items-center gap-2">
+                    <span>시작하기</span> <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Scene 2: Game Screen -->
+        <div id="scene-game" class="hidden w-full h-full flex-col gap-4">
+            <!-- Input Area -->
+            <div class="flex flex-col md:flex-row gap-4 h-full">
+                
+                <!-- Left: Similarities -->
+                <div class="flex-1 bg-white rounded-2xl shadow-lg border-t-4 border-emerald-400 flex flex-col overflow-hidden">
+                    <div class="p-4 bg-emerald-50 border-b border-emerald-100 flex justify-between items-center">
+                        <h3 class="font-bold text-emerald-800 text-lg"><i class="fas fa-equals mr-2"></i>우리는 같아요 (공통점)</h3>
+                        <span id="count-common" class="bg-white text-emerald-600 px-3 py-1 rounded-full text-sm font-bold shadow-sm">0</span>
+                    </div>
+                    <div class="p-4 bg-white border-b border-slate-100">
+                        <div class="relative">
+                            <input type="text" id="input-common" placeholder="공통점을 입력하고 엔터!" 
+                                class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-400 transition"
+                                onkeypress="handleKeyPress(event, 'common')">
+                            <button onclick="addItem('common')" class="absolute right-2 top-2 bg-emerald-500 text-white w-8 h-8 rounded-lg hover:bg-emerald-600 transition">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="list-common" class="flex-1 overflow-y-auto p-4 space-y-2 bg-slate-50/50">
+                        <!-- Items will go here -->
+                        <div class="text-center text-slate-400 mt-10 text-sm">
+                            <i class="fas fa-comment-dots text-3xl mb-2 opacity-30"></i><br>
+                            사소한 것도 좋아요.<br>"아침 먹었어요?"부터 물어보세요.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Differences -->
+                <div class="flex-1 bg-white rounded-2xl shadow-lg border-t-4 border-amber-400 flex flex-col overflow-hidden">
+                    <div class="p-4 bg-amber-50 border-b border-amber-100 flex justify-between items-center">
+                        <h3 class="font-bold text-amber-800 text-lg"><i class="fas fa-not-equal mr-2"></i>서로 달라요 (새로운 발견)</h3>
+                        <span id="count-diff" class="bg-white text-amber-600 px-3 py-1 rounded-full text-sm font-bold shadow-sm">0</span>
+                    </div>
+                    <div class="p-4 bg-white border-b border-slate-100">
+                        <div class="relative">
+                            <input type="text" id="input-diff" placeholder="차이점을 입력하고 엔터!" 
+                                class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-400 transition"
+                                onkeypress="handleKeyPress(event, 'diff')">
+                            <button onclick="addItem('diff')" class="absolute right-2 top-2 bg-amber-500 text-white w-8 h-8 rounded-lg hover:bg-amber-600 transition">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="list-diff" class="flex-1 overflow-y-auto p-4 space-y-2 bg-slate-50/50">
+                         <!-- Items will go here -->
+                         <div class="text-center text-slate-400 mt-10 text-sm">
+                            <i class="fas fa-globe-americas text-3xl mb-2 opacity-30"></i><br>
+                            다름은 틀린 게 아니에요.<br>서로의 특별한 점을 찾아보세요.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Suggestion Card (Bottom) -->
+            <div class="bg-white p-3 rounded-xl shadow-sm border border-slate-200 flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <span class="bg-indigo-100 text-indigo-600 px-2 py-1 rounded text-xs font-bold">Talk Tip</span>
+                    <span id="topic-suggestion" class="text-slate-600 text-sm md:text-base animate-pulse">대화가 막혔나요? 여기를 보세요.</span>
+                </div>
+                <button onclick="rotateTopic()" class="text-xs text-indigo-500 hover:text-indigo-700 font-medium underline">
+                    새로운 주제
+                </button>
+            </div>
+            
+             <div class="text-center">
+                <button onclick="finishGame()" class="px-6 py-2 bg-slate-800 text-white rounded-full text-sm hover:bg-slate-700 transition">
+                    게임 종료 및 결과 보기
+                </button>
+            </div>
+        </div>
+
+        <!-- Scene 3: Result Screen -->
+        <div id="scene-result" class="hidden slide-enter w-full max-w-3xl mx-auto text-center bg-white rounded-2xl shadow-2xl overflow-hidden">
+            <div class="bg-slate-800 p-8 text-white relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-full opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+                <h2 class="text-3xl font-bold mb-2 relative z-10">환대의 시간 종료!</h2>
+                <p class="text-slate-300 relative z-10">우리가 발견한 서로의 모습입니다.</p>
+            </div>
+            
+            <div class="p-8 grid grid-cols-2 gap-8">
+                <div class="text-center">
+                    <div class="text-4xl font-bold text-emerald-500 mb-2" id="result-common-count">0</div>
+                    <div class="text-sm text-slate-500 font-medium">발견한 공통점</div>
+                    <p class="text-xs text-emerald-600 mt-2 bg-emerald-50 py-1 rounded">우리는 이렇게 연결되어 있어요</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl font-bold text-amber-500 mb-2" id="result-diff-count">0</div>
+                    <div class="text-sm text-slate-500 font-medium">발견한 차이점(특별함)</div>
+                    <p class="text-xs text-amber-600 mt-2 bg-amber-50 py-1 rounded">서로의 세계가 이만큼 넓어졌어요</p>
+                </div>
+            </div>
+
+            <div class="px-8 pb-8">
+                <div class="bg-indigo-50 p-6 rounded-xl text-left mb-6">
+                    <h3 class="font-bold text-indigo-800 mb-2 text-sm">💡 마무리 가이드</h3>
+                    <ul class="text-sm text-indigo-700 space-y-2 list-disc list-inside">
+                        <li>가장 놀라웠던 공통점이나 차이점 하나를 서로 이야기해보세요.</li>
+                        <li>상대방의 차이점이 나에게 어떤 도움이나 즐거움이 될 수 있을지 상상해보세요.</li>
+                        <li>"덕분에 즐거웠습니다"라고 인사하며 환대를 완성하세요.</li>
+                    </ul>
+                </div>
+                <button onclick="resetGame()" class="px-6 py-3 bg-slate-200 text-slate-700 font-bold rounded-lg hover:bg-slate-300 transition w-full">
+                    처음으로 돌아가기
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // State
+        let gameState = {
+            commonItems: [],
+            diffItems: [],
+            timeLeft: 300,
+            timerId: null
+        };
+
+        const topics = [
+            "좋아하는 계절은 무엇인가요?",
+            "최근에 먹은 가장 맛있었던 음식은?",
+            "아침형 인간인가요, 저녁형 인간인가요?",
+            "강아지파? 고양이파?",
+            "여행 스타일: 휴양 vs 관광",
+            "탕수육 먹는 법: 부먹 vs 찍먹",
+            "가장 최근에 본 영화나 드라마는?",
+            "쉬는 날 주로 무엇을 하며 보내나요?",
+            "커피 vs 차(Tea)",
+            "인생의 소울 푸드가 있다면?"
+        ];
+
+        // Functions
+        function startGame() {
+            const timeSelect = document.getElementById('time-select');
+            gameState.timeLeft = parseInt(timeSelect.value);
+            
+            document.getElementById('scene-start').classList.add('hidden');
+            document.getElementById('scene-game').classList.remove('hidden');
+            document.getElementById('scene-game').classList.add('flex'); // restore flex layout
+            document.getElementById('timer-display').classList.remove('hidden');
+            
+            updateTimerDisplay();
+            rotateTopic();
+            
+            gameState.timerId = setInterval(() => {
+                gameState.timeLeft--;
+                updateTimerDisplay();
+                if (gameState.timeLeft <= 0) {
+                    finishGame();
+                }
+            }, 1000);
+
+            // Focus on first input
+            setTimeout(() => document.getElementById('input-common').focus(), 100);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(gameState.timeLeft / 60);
+            const seconds = gameState.timeLeft % 60;
+            const display = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            const timerEl = document.getElementById('timer-display');
+            
+            timerEl.innerText = display;
+            
+            if (gameState.timeLeft < 30) {
+                timerEl.classList.add('text-red-500', 'animate-pulse');
+                timerEl.classList.remove('text-indigo-600');
+            }
+        }
+
+        function handleKeyPress(event, type) {
+            if (event.key === 'Enter') {
+                addItem(type);
+            }
+        }
+
+        function addItem(type) {
+            const inputId = type === 'common' ? 'input-common' : 'input-diff';
+            const input = document.getElementById(inputId);
+            const text = input.value.trim();
+
+            if (text) {
+                const listId = type === 'common' ? 'list-common' : 'list-diff';
+                const countId = type === 'common' ? 'count-common' : 'count-diff';
+                const container = document.getElementById(listId);
+                
+                // Remove placeholder if it exists
+                if (container.children.length > 0 && container.children[0].classList.contains('text-center')) {
+                    container.innerHTML = '';
+                }
+
+                // Create Item
+                const itemDiv = document.createElement('div');
+                itemDiv.className = `p-3 rounded-lg shadow-sm border item-pop flex justify-between items-center ${
+                    type === 'common' ? 'bg-white border-emerald-100 text-emerald-800' : 'bg-white border-amber-100 text-amber-800'
+                }`;
+                itemDiv.innerHTML = `
+                    <span class="font-medium"># ${text}</span>
+                    <button onclick="this.parentElement.remove(); updateCounts();" class="text-slate-300 hover:text-red-400">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                
+                // Add to DOM first (top)
+                container.insertBefore(itemDiv, container.firstChild);
+                input.value = '';
+                
+                // Update State
+                if (type === 'common') gameState.commonItems.push(text);
+                else gameState.diffItems.push(text);
+
+                updateCounts();
+                input.focus();
+            }
+        }
+
+        function updateCounts() {
+            const commonCount = document.getElementById('list-common').querySelectorAll('div.item-pop').length;
+            const diffCount = document.getElementById('list-diff').querySelectorAll('div.item-pop').length;
+            
+            document.getElementById('count-common').innerText = commonCount;
+            document.getElementById('count-diff').innerText = diffCount;
+        }
+
+        function rotateTopic() {
+            const randomTopic = topics[Math.floor(Math.random() * topics.length)];
+            const el = document.getElementById('topic-suggestion');
+            el.style.opacity = 0;
+            setTimeout(() => {
+                el.innerText = randomTopic;
+                el.style.opacity = 1;
+            }, 200);
+        }
+
+        function finishGame() {
+            clearInterval(gameState.timerId);
+            
+            const commonCount = document.getElementById('list-common').querySelectorAll('div.item-pop').length;
+            const diffCount = document.getElementById('list-diff').querySelectorAll('div.item-pop').length;
+
+            document.getElementById('result-common-count').innerText = commonCount;
+            document.getElementById('result-diff-count').innerText = diffCount;
+
+            document.getElementById('scene-game').classList.add('hidden');
+            document.getElementById('scene-game').classList.remove('flex');
+            document.getElementById('timer-display').classList.add('hidden');
+            
+            document.getElementById('scene-result').classList.remove('hidden');
+        }
+
+        function resetGame() {
+            // Reset UI
+            document.getElementById('list-common').innerHTML = `
+                <div class="text-center text-slate-400 mt-10 text-sm">
+                    <i class="fas fa-comment-dots text-3xl mb-2 opacity-30"></i><br>
+                    사소한 것도 좋아요.<br>"아침 먹었어요?"부터 물어보세요.
+                </div>`;
+            document.getElementById('list-diff').innerHTML = `
+                <div class="text-center text-slate-400 mt-10 text-sm">
+                    <i class="fas fa-globe-americas text-3xl mb-2 opacity-30"></i><br>
+                    다름은 틀린 게 아니에요.<br>서로의 특별한 점을 찾아보세요.
+                </div>`;
+            
+            document.getElementById('input-common').value = '';
+            document.getElementById('input-diff').value = '';
+            updateCounts();
+            
+            // Reset State
+            gameState = {
+                commonItems: [],
+                diffItems: [],
+                timeLeft: 300,
+                timerId: null
+            };
+
+            const timerEl = document.getElementById('timer-display');
+            timerEl.classList.remove('text-red-500', 'animate-pulse');
+            timerEl.classList.add('text-indigo-600');
+
+            document.getElementById('scene-result').classList.add('hidden');
+            document.getElementById('scene-start').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
