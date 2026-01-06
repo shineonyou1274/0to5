@@ -209,19 +209,41 @@
         };
 
         const topics = [
+            // 기본 질문
             "좋아하는 계절은 무엇인가요?",
             "최근에 먹은 가장 맛있었던 음식은?",
             "아침형 인간인가요, 저녁형 인간인가요?",
             "강아지파? 고양이파?",
-            "여행 스타일: 휴양 vs 관광",
+            "여행 스타일: 휴양(호캉스) vs 관광(뚜벅이)",
             "탕수육 먹는 법: 부먹 vs 찍먹",
             "가장 최근에 본 영화나 드라마는?",
             "쉬는 날 주로 무엇을 하며 보내나요?",
-            "커피 vs 차(Tea)",
+            "커피(아아/뜨아) vs 차(Tea)",
             "인생의 소울 푸드가 있다면?",
             "학창시절 가장 좋아했던 과목은?",
-            "가보고 싶은 나라가 있나요?"
+            "가보고 싶은 나라가 있나요?",
+            
+            // 직장/학교 관련
+            "출근길, 나만의 루틴이 있나요?",
+            "업무 중 가장 행복한 순간은?",
+            "나의 책상 위 필수템은 무엇인가요?",
+            "스트레스 해소법을 공유해주세요.",
+            "만약 한 달 휴가가 생긴다면?",
+            
+            // 상상력 & 가치관
+            "10억 로또에 당첨된다면?",
+            "초능력 하나를 가질 수 있다면 무엇을?",
+            "나를 동물로 비유한다면?",
+            "타임머신을 타고 가고 싶은 때는?",
+            "요즘 가장 관심 있는 취미는?",
+            "유튜브 알고리즘이 추천하는 영상은?",
+            "나만의 소확행(작지만 확실한 행복)은?",
+            "가장 좋아하는 색깔과 그 이유는?",
+            "지금 당장 먹고 싶은 간식은?"
         ];
+
+        // Sound Effect
+        const finishSound = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-happy-bells-notification-937.mp3');
 
         // Functions
         function startGame() {
@@ -329,6 +351,9 @@
         function finishGame() {
             clearInterval(gameState.timerId);
             
+            // Play sound
+            finishSound.play().catch(e => console.log('Audio play failed (user interaction needed first):', e));
+
             const commonCount = document.getElementById('list-common').querySelectorAll('div.item-pop').length;
             const diffCount = document.getElementById('list-diff').querySelectorAll('div.item-pop').length;
 
